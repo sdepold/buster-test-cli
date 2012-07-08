@@ -78,6 +78,34 @@ buster.testCase("Browser runner", {
         }
     },
 
+    "server url": {
+        "doesn't contain information about basic auth if none were passed": function () {
+            var url = this.runner.testRun.serverURL({
+                server: "http://localhost:1111"
+            });
+
+            refute.defined(url.auth);
+        },
+
+        "should contain information about basic auth if they were passed": function () {
+            var url = this.runner.testRun.serverURL({
+                server: "http://foo:bar@localhost:1112"
+            });
+
+            assert.defined(url.auth);
+            assert.equals(url.auth, "foo:bar");
+        },
+
+        "should contain basic auth with hash if passed": function () {
+            var url = this.runner.testRun.serverURL({
+                server: "http://foo:bar#asd@localhost:1112"
+            });
+
+            assert.defined(url.auth);
+            assert.equals(url.auth, "foo:bar#asd");
+        }
+    },
+
     "session creation": {
         setUp: function () {
             var client = this.serverClient = fakeServerClient(this);
